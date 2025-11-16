@@ -8,6 +8,44 @@ import { billboardTop50, BillboardSong } from '@/data/billboardSongs';
 import { playRandomSong } from '@/lib/musicPlayer';
 
 export default function Home() {
+  // Replace "Unknown" artists with random stupid names
+  const getRandomArtistName = (seed: number): string => {
+    const names = [
+      'Lil Yeet',
+      'Big Chungus',
+      'DJ Skibidi',
+      'MC Rizz',
+      'Yung Cringe',
+      'Lil Brainrot',
+      'Chief Bussin',
+      'Drake (the fake one)',
+      'Kanye Pest',
+      'Ariana Venti',
+      'PostAlone',
+      'The Vibekend',
+      'Doja Rat',
+      'Ed Sheeran\'s Cousin',
+      'Taylor Slow',
+      'Olivia Rodrigone',
+      'Billie Eyelash',
+      'Harry Tiles',
+      'Lil Nas Y',
+      'Bruno Pluto',
+      'Selena No-Gomez',
+      'Justin Beaver',
+      'Shawn Mendez (from Walmart)',
+      'Camila Cabello Cheese',
+      'The Chainsmokers (Vape Edition)',
+    ];
+    return names[seed % names.length];
+  };
+
+  // Fix unknown artists
+  const songsWithNames = billboardTop50.map(song => ({
+    ...song,
+    artist: song.artist === 'Unknown' ? getRandomArtistName(song.rank) : song.artist,
+  }));
+
   // Group songs by color (using a stupid color detection algorithm)
   const getColorGroup = (imagePath: string): string => {
     // Extract color hints from filename (this is intentionally stupid)
@@ -27,7 +65,7 @@ export default function Home() {
   };
 
   const groupedSongs: Record<string, BillboardSong[]> = {};
-  billboardTop50.forEach(song => {
+  songsWithNames.forEach(song => {
     const colorGroup = getColorGroup(song.image);
     if (!groupedSongs[colorGroup]) {
       groupedSongs[colorGroup] = [];
