@@ -53,7 +53,7 @@ const conversationExamples = [
 
 export async function POST(request: Request) {
   try {
-    const { userMessage } = await request.json();
+    const { userMessage, conversationHistory } = await request.json();
 
     if (!process.env.COHERE_API_KEY) {
       return NextResponse.json(
@@ -62,31 +62,29 @@ export async function POST(request: Request) {
       );
     }
 
-    // Build messages array with system prompt and examples
+    // Build the conversation for Cohere
     const messages: any[] = [
       {
         role: "system",
         content: SYSTEM_PROMPT
       },
       ...conversationExamples,
-      {
-        role: "user",
-        content: userMessage
-      }
+      ...(conversationHistory || [])
     ];
 
     const response = await cohere.chat({
       messages: messages,
-      temperature: 1,
-      model: "command-r-03-2024"
+      temperature: 1.2,
+      model: "command-r-08-2024"
     });
 
     // Extract the text from the response
-    const botMessage = response.message?.content?.[0]?.text || "Bruh, I'm glitching rn. Try again. 💀";
+    const content = response.message?.content?.[0];
+    const botMessage = (content && 'text' in content) ? content.text : "Bruh, I'm glitching rn. Try again. 💀";
 
     return NextResponse.json({ message: botMessage });
-  } catch (error) {
-    console.error('Cohere API error:', error);
+  } catch (error: any) {
+    console.error('Cohere API error:', error?.message);
     return NextResponse.json(
       { message: "AI's bussin' too hard rn. System overload fr. Try later, bestie. 🔥" },
       { status: 200 }

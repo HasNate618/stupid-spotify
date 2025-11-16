@@ -27,25 +27,36 @@ export function GaslightBot() {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
+    const currentInput = input;
+    
     // Add user message
-    const userMessage: Message = { text: input, isBot: false };
-    setMessages(prev => [...prev, userMessage]);
+    const userMessage: Message = { text: currentInput, isBot: false };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
 
+    console.log('=== SENDING MESSAGE ===');
+    console.log('Current input:', currentInput);
+    console.log('Updated messages count:', updatedMessages.length);
+    console.log('Conversation history being sent:', updatedMessages.slice(1).map(msg => ({
+      role: msg.isBot ? 'assistant' : 'user',
+      content: msg.text
+    })));
+
     try {
-      // Call the API route
+      // Call the API route with updated messages including the new user message
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: messages.map(msg => ({
+          userMessage: currentInput,
+          conversationHistory: updatedMessages.slice(1).map(msg => ({
             role: msg.isBot ? 'assistant' : 'user',
             content: msg.text
-          })),
-          userMessage: input
+          }))
         }),
       });
 
@@ -54,6 +65,7 @@ export function GaslightBot() {
       }
 
       const data = await response.json();
+      console.log('Received bot message:', data.message);
       const botMessage: Message = { text: data.message, isBot: true };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {

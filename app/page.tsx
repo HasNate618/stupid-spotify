@@ -21,46 +21,49 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
-          backgroundSize: '400% 400%',
-          animation: 'dreamyGradient 15s ease infinite',
-          fontFamily: '"Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive',
-        }}
-      >
-        <style jsx>{`
-          @keyframes dreamyGradient {
+      <>
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes loadingGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
           }
-        `}</style>
-        <div className="text-center">
-          <div className="text-6xl mb-4 animate-bounce">✨</div>
-          <p className="text-3xl text-white" style={{ textShadow: '0 0 20px rgba(255,255,255,0.8)' }}>
-            loading ur vibe...
-          </p>
+        `}} />
+        <div 
+          className="min-h-screen flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
+            backgroundSize: '400% 400%',
+            animation: 'loadingGradient 15s ease infinite',
+            fontFamily: '"Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive',
+          }}
+        >
+          <div className="text-center">
+            <div className="text-6xl mb-4 animate-bounce">✨</div>
+            <p className="text-3xl text-white" style={{ textShadow: '0 0 20px rgba(255,255,255,0.8)' }}>
+              loading ur vibe...
+            </p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div 
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        background: '#00ffff',
-        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)',
-      }}
-    >
-      <style jsx global>{`
+    <>
+      <style dangerouslySetInnerHTML={{__html: `
         @keyframes blink {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.3; }
         }
-      `}</style>
+      `}} />
+      <div 
+        className="min-h-screen relative overflow-hidden"
+        style={{
+          background: '#00ffff',
+          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)',
+        }}
+      >
 
       {/* AI Chatbot */}
       <GaslightBot />
@@ -308,6 +311,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
