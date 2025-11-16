@@ -1,54 +1,50 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Player } from '@/components/Player';
 import { GaslightBot } from '@/components/GaslightBot';
 import { DancingBaby } from '@/components/DancingBaby';
-import { songService } from '@/services/songService';
-import { Song } from '@/hooks/useAudioPlayer';
+import { billboardTop50, BillboardSong } from '@/data/billboardSongs';
+import { playRandomSong } from '@/lib/musicPlayer';
 
 export default function Home() {
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Group songs by color (using a stupid color detection algorithm)
+  const getColorGroup = (imagePath: string): string => {
+    // Extract color hints from filename (this is intentionally stupid)
+    const lowerPath = imagePath.toLowerCase();
+    if (lowerPath.includes('taylor') || lowerPath.includes('swift')) return 'pink';
+    if (lowerPath.includes('justin') || lowerPath.includes('bieber')) return 'purple';
+    if (lowerPath.includes('morgan') || lowerPath.includes('wallen')) return 'orange';
+    if (lowerPath.includes('sabrina')) return 'yellow';
+    if (lowerPath.includes('chris') || lowerPath.includes('brown')) return 'red';
+    if (lowerPath.includes('luke')) return 'blue';
+    if (lowerPath.includes('megan')) return 'green';
+    
+    // Random assignment based on rank for the rest
+    const rank = parseInt(imagePath.match(/\d+/)?.[0] || '0');
+    const colors = ['pink', 'purple', 'orange', 'yellow', 'red', 'blue', 'green', 'teal'];
+    return colors[rank % colors.length];
+  };
 
-  useEffect(() => {
-    const loadSongs = async () => {
-      const data = await songService.getAllSongs();
-      setSongs(data);
-      setLoading(false);
-    };
-    loadSongs();
-  }, []);
+  const groupedSongs: Record<string, BillboardSong[]> = {};
+  billboardTop50.forEach(song => {
+    const colorGroup = getColorGroup(song.image);
+    if (!groupedSongs[colorGroup]) {
+      groupedSongs[colorGroup] = [];
+    }
+    groupedSongs[colorGroup].push(song);
+  });
 
-  if (loading) {
-    return (
-      <>
-        <style dangerouslySetInnerHTML={{__html: `
-          @keyframes loadingGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-          }
-        `}} />
-        <div 
-          className="min-h-screen flex items-center justify-center"
-          style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
-            backgroundSize: '400% 400%',
-            animation: 'loadingGradient 15s ease infinite',
-            fontFamily: '"Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive',
-          }}
-        >
-          <div className="text-center">
-            <div className="text-6xl mb-4 animate-bounce">✨</div>
-            <p className="text-3xl text-white" style={{ textShadow: '0 0 20px rgba(255,255,255,0.8)' }}>
-              loading ur vibe...
-            </p>
-          </div>
-        </div>
-      </>
-    );
-  }
+  const colorThemes: Record<string, { bg: string, border: string, shadow: string, text: string }> = {
+    pink: { bg: '#ff69b4', border: '#ff1493', shadow: '#ff00ff', text: 'PINK VIBES 💖' },
+    purple: { bg: '#9370db', border: '#8b00ff', shadow: '#4b0082', text: 'PURPLE ENERGY 💜' },
+    orange: { bg: '#ff8c00', border: '#ff4500', shadow: '#ff6347', text: 'ORANGE SQUAD 🧡' },
+    yellow: { bg: '#ffd700', border: '#ffff00', shadow: '#ff0', text: 'YELLOW CREW 💛' },
+    red: { bg: '#ff6b6b', border: '#ff0000', shadow: '#dc143c', text: 'RED ZONE ❤️' },
+    blue: { bg: '#4169e1', border: '#0000ff', shadow: '#1e90ff', text: 'BLUE TEAM 💙' },
+    green: { bg: '#32cd32', border: '#00ff00', shadow: '#228b22', text: 'GREEN GANG 💚' },
+    teal: { bg: '#00ced1', border: '#00ffff', shadow: '#20b2aa', text: 'TEAL TAKEOVER 💎' },
+  };
 
   return (
     <>
@@ -163,97 +159,138 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="px-8 pb-32 relative z-10">
-        <div 
-          className="max-w-4xl mx-auto p-8"
-          style={{
-            background: 'linear-gradient(45deg, #ffff00 25%, #00ffff 25%, #00ffff 50%, #ffff00 50%, #ffff00 75%, #00ffff 75%, #00ffff)',
-            backgroundSize: '40px 40px',
-            border: '8px ridge #ff00ff',
-            boxShadow: '0 0 0 8px #00ff00, 15px 15px 0px #ff0000, 30px 30px 0px #0000ff',
-          }}
-        >
-          {/* Song List */}
-          <div className="space-y-6">
-            {songs.map((song, index) => {
-              const colors = [
-                { bg: 'linear-gradient(90deg, #ff6b6b, #feca57)', border: '#ff0000', shadow: '#0000ff' },
-                { bg: 'linear-gradient(90deg, #48dbfb, #0abde3)', border: '#00ff00', shadow: '#ff00ff' },
-                { bg: 'linear-gradient(90deg, #ee5a6f, #f368e0)', border: '#ffff00', shadow: '#00ffff' },
-                { bg: 'linear-gradient(90deg, #1dd1a1, #10ac84)', border: '#ff00ff', shadow: '#ff0000' },
-                { bg: 'linear-gradient(90deg, #ff9ff3, #feca57)', border: '#00ffff', shadow: '#00ff00' },
-              ];
-              const color = colors[index % colors.length];
-              
-              return (
-                <div 
-                  key={song.id}
-                  className="p-6 cursor-pointer"
+        {/* Group by color sections */}
+        {Object.entries(groupedSongs).map(([colorName, songsInGroup]) => {
+          const theme = colorThemes[colorName];
+          
+          return (
+            <div key={colorName} className="mb-16">
+              {/* Color group header */}
+              <div 
+                className="text-center mb-8 py-6 border-8 border-double"
+                style={{
+                  background: `linear-gradient(45deg, ${theme.bg}, ${theme.border})`,
+                  borderColor: `${theme.shadow} ${theme.border} ${theme.shadow} ${theme.border}`,
+                  boxShadow: `10px 10px 0px ${theme.shadow}, 20px 20px 0px #000`,
+                  transform: 'rotate(-1deg)',
+                }}
+              >
+                <h2 
+                  className="text-6xl font-black"
                   style={{
-                    background: color.bg,
-                    border: `6px groove ${color.border}`,
-                    boxShadow: `8px 8px 0px ${color.shadow}, 16px 16px 0px #000`,
-                    transform: `rotate(${index % 2 === 0 ? '1deg' : '-1deg'})`,
+                    color: '#fff',
+                    textShadow: `5px 5px 0px #000, 10px 10px 0px ${theme.shadow}`,
+                    fontFamily: '"Impact", sans-serif',
+                    letterSpacing: '0.1em',
                   }}
                 >
-                  <div className="flex items-center gap-4">
-                    <div 
-                      className="w-20 h-20 flex items-center justify-center text-4xl border-4 border-black"
-                      style={{
-                        background: 'radial-gradient(circle, #ff00ff, #00ffff)',
-                      }}
-                    >
-                      🎵
-                    </div>
-                    <div className="flex-1">
-                      <h3 
-                        className="text-4xl font-black mb-1"
-                        style={{ 
-                          color: '#000',
-                          textShadow: '3px 3px 0px #fff, 6px 6px 0px rgba(0,0,0,0.5)',
-                          letterSpacing: '0.1em',
-                          fontFamily: '"Arial Black", "Impact", sans-serif',
-                        }}
-                      >
-                        {song.title}
-                      </h3>
-                      <p 
-                        className="text-2xl font-black"
-                        style={{ 
-                          color: '#fff',
-                          letterSpacing: '0.08em',
-                          textShadow: '2px 2px 0px #000',
-                          fontFamily: '"Comic Sans MS", cursive',
-                        }}
-                      >
-                        {song.artist}
-                      </p>
-                    </div>
-                    <div className="text-6xl">
-                      ▶️
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  {theme.text}
+                </h2>
+              </div>
 
-          {/* Bottom Text */}
-          <div className="text-center mt-8 bg-red-500 p-4 border-4 border-dashed border-blue-500" style={{
-            boxShadow: '5px 5px 0px #ffff00',
-          }}>
-            <p 
-              className="text-3xl font-black"
-              style={{ 
-                color: '#ffff00',
-                textShadow: '3px 3px 0px #000',
-                letterSpacing: '0.08em',
-                fontFamily: '"Comic Sans MS", cursive',
-              }}
-            >
-              ~~~ just here for the vibes ~~~ ☁️ 🌸 💭
-            </p>
-          </div>
-        </div>
+              {/* ULTRA STUPID GRID LAYOUT */}
+              <div className="max-w-[1800px] mx-auto">
+                <div className="grid gap-4" style={{
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                }}>
+                  {songsInGroup.map((song, index) => {
+                    const rotations = ['-5deg', '3deg', '-2deg', '4deg', '-3deg', '2deg'];
+                    const borderStyles = ['ridge', 'groove', 'outset', 'inset', 'double', 'solid'];
+                    const fontSize = ['18px', '24px', '16px', '22px', '20px', '26px'];
+                    
+                    return (
+                      <div 
+                        key={song.id}
+                        className="cursor-pointer hover:scale-110 transition-transform"
+                        style={{
+                          background: theme.bg,
+                          border: `${4 + (index % 5)}px ${borderStyles[index % borderStyles.length]} ${theme.border}`,
+                          padding: '12px',
+                          transform: `rotate(${rotations[index % rotations.length]}) scale(${0.9 + (index % 3) * 0.1})`,
+                          boxShadow: `${3 + index % 5}px ${3 + index % 5}px 0px #000, ${6 + index % 7}px ${6 + index % 7}px 0px ${theme.shadow}`,
+                        }}
+                      >
+                        {/* Rank badge */}
+                        <div 
+                          className="absolute -top-3 -left-3 w-12 h-12 rounded-full flex items-center justify-center font-black text-xl border-4 border-black"
+                          style={{
+                            background: `radial-gradient(circle, ${theme.border}, ${theme.shadow})`,
+                            textShadow: '2px 2px 0px #fff',
+                          }}
+                        >
+                          #{song.rank}
+                        </div>
+
+                        {/* Album art */}
+                        <div className="relative mb-3">
+                          <img 
+                            src={song.image} 
+                            alt={song.title}
+                            className="w-full aspect-square object-cover border-4 border-black"
+                            style={{
+                              filter: `hue-rotate(${index * 30}deg) saturate(${100 + index * 20}%)`,
+                              transform: `rotate(${index % 2 === 0 ? '2deg' : '-2deg'})`,
+                            }}
+                          />
+                          {/* Random emoji overlay */}
+                          <div 
+                            className="absolute -bottom-2 -right-2 text-4xl"
+                            style={{
+                              transform: `rotate(${index * 15}deg)`,
+                            }}
+                          >
+                            {['🔥', '💀', '✨', '💯', '👑', '🎵', '⭐', '💖', '🌟', '🦋'][index % 10]}
+                          </div>
+                        </div>
+
+                        {/* Song info */}
+                        <div className="space-y-1">
+                          <h3 
+                            className="font-black leading-tight line-clamp-2"
+                            style={{ 
+                              color: index % 3 === 0 ? '#fff' : '#000',
+                              textShadow: index % 3 === 0 ? '2px 2px 0px #000, 4px 4px 0px rgba(255,0,255,0.5)' : '2px 2px 0px #fff',
+                              fontSize: fontSize[index % fontSize.length],
+                              fontFamily: index % 2 === 0 ? '"Comic Sans MS", cursive' : '"Impact", sans-serif',
+                              letterSpacing: '0.05em',
+                              textTransform: index % 4 === 0 ? 'uppercase' : 'none',
+                            }}
+                          >
+                            {song.title}
+                          </h3>
+                          <p 
+                            className="text-sm font-bold line-clamp-1"
+                            style={{ 
+                              color: index % 3 === 0 ? '#000' : '#fff',
+                              textShadow: '1px 1px 0px rgba(0,0,0,0.5)',
+                              fontFamily: '"Arial Black", sans-serif',
+                            }}
+                          >
+                            {song.artist}
+                          </p>
+                        </div>
+
+                        {/* Play button */}
+                        <div 
+                          className="mt-2 text-center py-2 border-4 border-black font-black cursor-pointer hover:scale-110 transition-transform"
+                          style={{
+                            background: `linear-gradient(45deg, ${theme.border}, ${theme.shadow})`,
+                            boxShadow: '3px 3px 0px #000',
+                            fontFamily: '"Comic Sans MS", cursive',
+                            fontSize: '16px',
+                          }}
+                          onClick={() => playRandomSong(song)}
+                        >
+                          ▶️ PLAY NOW
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })}
 
         {/* Visitor counter and web rings */}
         <div className="text-center mt-8 space-y-4">

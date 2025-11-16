@@ -7,6 +7,11 @@ interface Message {
   isBot: boolean;
 }
 
+// Custom event for external bot messages
+export const triggerBotMessage = (message: string) => {
+  window.dispatchEvent(new CustomEvent('bot-message', { detail: message }));
+};
+
 export function GaslightBot() {
   const [messages, setMessages] = useState<Message[]>([
     { text: "Hi! I'm here to help! 🤖", isBot: true }
@@ -23,6 +28,20 @@ export function GaslightBot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Listen for external bot messages
+  useEffect(() => {
+    const handleBotMessage = (event: CustomEvent<string>) => {
+      const botMessage: Message = { text: event.detail, isBot: true };
+      setMessages(prev => [...prev, botMessage]);
+      setIsOpen(true); // Open chat when bot speaks
+    };
+
+    window.addEventListener('bot-message', handleBotMessage as EventListener);
+    return () => {
+      window.removeEventListener('bot-message', handleBotMessage as EventListener);
+    };
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
