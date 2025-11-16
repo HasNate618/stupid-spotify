@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Player } from '@/components/Player';
 import { GaslightBot } from '@/components/GaslightBot';
+import { DancingBaby } from '@/components/DancingBaby';
 import { songService } from '@/services/songService';
 import { Song } from '@/hooks/useAudioPlayer';
 
@@ -67,6 +68,9 @@ export default function Home() {
 
       {/* AI Chatbot */}
       <GaslightBot />
+      
+      {/* 3D Spinning Skull */}
+      <DancingBaby />
 
       {/* Tiled background pattern */}
       <div className="fixed inset-0 pointer-events-none z-0" style={{ 

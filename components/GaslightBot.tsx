@@ -36,14 +36,6 @@ export function GaslightBot() {
     setInput('');
     setIsLoading(true);
 
-    console.log('=== SENDING MESSAGE ===');
-    console.log('Current input:', currentInput);
-    console.log('Updated messages count:', updatedMessages.length);
-    console.log('Conversation history being sent:', updatedMessages.slice(1).map(msg => ({
-      role: msg.isBot ? 'assistant' : 'user',
-      content: msg.text
-    })));
-
     try {
       // Call the API route with updated messages including the new user message
       const response = await fetch('/api/chat', {
@@ -65,11 +57,9 @@ export function GaslightBot() {
       }
 
       const data = await response.json();
-      console.log('Received bot message:', data.message);
       const botMessage: Message = { text: data.message, isBot: true };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error:', error);
       // Fallback response
       const fallbackMessage: Message = { 
         text: "Bruh, the AI's bussin' fr. Try again later, no cap. 🤷", 
