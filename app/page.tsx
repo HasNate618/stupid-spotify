@@ -72,22 +72,16 @@ export default function Home() {
       {/* 3D Spinning Skull */}
       <DancingBaby />
 
-      {/* Tiled background pattern */}
-      <div className="fixed inset-0 pointer-events-none z-0" style={{ 
-        backgroundImage: 'url(https://www.transparenttextures.com/patterns/45-degree-fabric-light.png)',
-        opacity: 0.3 
-      }}></div>
-
       {/* Random scattered images/stickers - STATIC */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <img src="https://i.imgur.com/7OkK5Kj.gif" alt="" className="absolute" style={{ top: '5%', left: '10%', width: '80px' }} />
-        <img src="https://i.imgur.com/Kvhv0Ss.gif" alt="" className="absolute" style={{ top: '15%', right: '15%', width: '100px' }} />
-        <img src="https://i.imgur.com/qQtethR.gif" alt="" className="absolute" style={{ bottom: '20%', left: '5%', width: '90px' }} />
-        <img src="https://i.imgur.com/M0vFcjl.gif" alt="" className="absolute" style={{ top: '50%', left: '20%', width: '70px' }} />
-        <img src="https://i.imgur.com/7OkK5Kj.gif" alt="" className="absolute" style={{ bottom: '10%', right: '10%', width: '85px' }} />
-        <img src="https://i.imgur.com/Kvhv0Ss.gif" alt="" className="absolute" style={{ top: '70%', left: '50%', width: '95px' }} />
-        <img src="https://i.imgur.com/qQtethR.gif" alt="" className="absolute" style={{ top: '30%', right: '25%', width: '75px' }} />
-        <img src="https://i.imgur.com/M0vFcjl.gif" alt="" className="absolute" style={{ bottom: '40%', right: '5%', width: '80px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ top: '5%', left: '10%', width: '80px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ top: '15%', right: '15%', width: '100px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ bottom: '20%', left: '5%', width: '90px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ top: '50%', left: '20%', width: '70px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ bottom: '10%', right: '10%', width: '85px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ top: '70%', left: '50%', width: '95px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ top: '30%', right: '25%', width: '75px' }} />
+        <img src="/matcha.jpg" alt="" className="absolute" style={{ bottom: '40%', right: '5%', width: '80px' }} />
         <img src="https://i.imgur.com/7OkK5Kj.gif" alt="" className="absolute" style={{ top: '25%', left: '45%', width: '65px' }} />
         <img src="https://i.imgur.com/Kvhv0Ss.gif" alt="" className="absolute" style={{ bottom: '55%', left: '80%', width: '70px' }} />
       </div>
