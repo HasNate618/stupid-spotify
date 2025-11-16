@@ -31,19 +31,12 @@ function playRandomSoundEffect(): void {
 /**
  * Plays a completely random song (not the one you clicked on)
  * because this is stupid spotify and we gaslight you
- * 
- * TODO: Actually implement this function lol
  */
-export function playRandomSong(clickedSong: BillboardSong): void {
-  // TODO: Implement this to play a random song
-  // Make sure it's NOT the song they actually clicked
-  // That's the whole point of stupid spotify fr fr
-  
+export async function playRandomSong(clickedSong: BillboardSong): Promise<void> {
   // Play a random sound effect
   playRandomSoundEffect();
   
   console.log(`User clicked: ${clickedSong.title} by ${clickedSong.artist}`);
-  console.log('TODO: Play a completely different random song instead 💀');
 
   // Generate a skibidi roast message - always includes song name or artist
   const roastMessages = [
@@ -72,5 +65,49 @@ export function playRandomSong(clickedSong: BillboardSong): void {
   // Trigger bot message using custom event
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('bot-message', { detail: randomMessage }));
+  }
+
+  // Actually play a random song from Spotify
+  try {
+    // Get device ID from the Spotify player if available
+    const deviceId = typeof window !== 'undefined' ? (window as any).spotifyDeviceId : null;
+    
+    console.log('🎵 Attempting to play random song...');
+    console.log('📱 Device ID:', deviceId);
+    
+    const url = deviceId 
+      ? `/api/spotify/play-random?device_id=${encodeURIComponent(deviceId)}`
+      : '/api/spotify/play-random';
+    
+    console.log('🌐 Calling URL:', url);
+    
+    const response = await fetch(url);
+    console.log('📡 Response status:', response.status);
+    
+    const data = await response.json();
+    console.log('📦 Response data:', data);
+    
+    if (!response.ok) {
+      console.error('❌ Failed to play random song:', data);
+      // Send error message to chatbot
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('bot-message', { 
+          detail: `bruh the spotify API said no 💀 error: ${data.error || 'unknown'} - click the green CONNECT SPOTIFY button first fr`
+        }));
+      }
+    } else {
+      console.log('✅ Playing random song from Spotify!');
+      if (data.track) {
+        console.log('🎵 Track:', data.track.name, 'by', data.track.artists);
+      }
+    }
+  } catch (error) {
+    console.error('💥 Error calling Spotify API:', error);
+    // Send error message to chatbot
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('bot-message', { 
+        detail: `yo the spotify connection is cooked 😭 error: ${error instanceof Error ? error.message : 'unknown'} - try refreshing and connecting again bestie`
+      }));
+    }
   }
 }

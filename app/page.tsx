@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Player } from '@/components/Player';
 import { GaslightBot } from '@/components/GaslightBot';
 import { DancingBaby } from '@/components/DancingBaby';
+import { SpotifyPlayer } from '@/components/SpotifyPlayer';
 import { billboardTop50, BillboardSong } from '@/data/billboardSongs';
 import { playRandomSong } from '@/lib/musicPlayer';
 
@@ -103,7 +104,10 @@ export default function Home() {
       {/* AI Chatbot */}
       <GaslightBot />
       
-      {/* 3D Spinning Skull */}
+      {/* Spotify Player */}
+      <SpotifyPlayer />
+      
+      {/* CSS Spinning Skull - Now works with React 18! */}
       <DancingBaby />
 
       {/* Random scattered images/stickers - STATIC */}
