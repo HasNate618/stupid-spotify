@@ -14,36 +14,38 @@ Because we could. Also because the hackathon judges wanted:
 - **CREATIVITY** - Is it creative? ✅ UNFORTUNATELY
 - **CHAOS** - Does it cause chaos? ✅ MAXIMUM CHAOS
 
-## 🎭 FEATURES (AKA THE STUPID STUFF)
+## FEATURES (AKA THE STUPID STUFF)
 
-### 🎵 Real Spotify Playback (The Only Smart Thing Here)
+### Real Spotify Playback (The Only Smart Thing Here)
 - **ACTUAL Spotify integration** using OAuth 2.0 and Web Playback SDK
-- Click random song button → plays ACTUAL music from your Spotify Premium account
+- Click random song button → plays ACTUAL music from a cringe music playlist
 - Full playback controls that work (shocking, we know)
-- Lives at the **bottom of your screen** in a cyberpunk dock with slanted buttons
 - Requires Spotify Premium because we're fancy like that
 
-### 🤖 AI Chatbot That GASLIGHTS You
+### AI Chatbot That GASLIGHTS You
 - Powered by **Cohere AI** (command-r-08-2024 model)
 - Ask it for music recommendations → it roasts you in Gen Z slang
 - Temperature set to **1.2** for MAXIMUM UNHINGED ENERGY
 - 18 different skibidi toilet jokes programmed in
 - Will tell you your music taste is "mid" and "not bussin fr fr"
 
-### 💀 Spinning Skull Emoji
-- Originally was a 3D skull from Three.js
-- React 19 broke it so we replaced it with a CSS spinning emoji
-- Floats around the screen menacingly
-- Has a pink glow because aesthetics
+### Stupid Face Matching CAPTCHA
+- Uses webcam and face detection (face-api.js)
+- User must match their face to a stupid meme image (e.g. thinking monkey, confused Wojak)
+- If you don't match, you can't proceed (the dumbest security ever)
+- Great for making users feel as dumb as the app
+  
+### Spinning 3D Skull Background
+- Implemented by rotating a 3D model using three.js
+- 💀
 
-### 🎨 Billboard Hot 100 (But Make It Stupid)
+### Billboard Hot 100 (But Make It Stupid)
 - Scraped real Billboard chart data with Python
 - Songs grouped by fake "cover art colors" 
 - Click a song → **plays a DIFFERENT random song**
-- Artists with "Unknown" names get replaced with "Lil Yeet" and "DJ Skibidi"
-- Random sound effects play when you click
+- Song data not scraped properly were replaced with "Lil Yeet" and "DJ Skibidi"
 
-### 🎨 Early 2000s GeoCities Aesthetic
+### Early 2000s Aesthetic
 - **Comic Sans MS everywhere** (yes, really)
 - Neon lime green, hot pink, and cyan colors
 - 3D borders on literally everything
@@ -52,7 +54,7 @@ Because we could. Also because the hackathon judges wanted:
 - Random sticker images floating around
 - Background patterns that hurt your eyes
 
-## 🛠️ HOW WE BUILT THIS MONSTROSITY
+## HOW WE BUILT THIS MONSTROSITY
 
 ### Tech Stack (Actually Kinda Modern???)
 - **Next.js 16.0.3** - Because we needed server-side rendering for some reason
@@ -62,6 +64,8 @@ Because we could. Also because the hackathon judges wanted:
 - **Spotify Web API + Web Playback SDK** - The only smart part
 - **Cohere AI** - For the gaslighting chatbot
 - **Python + BeautifulSoup4** - Scraped Billboard Hot 100 data
+- **Three.js + @react-three/fiber** - For the 3D skull model
+- **face-api.js + react-webcam** - For the stupid face matching CAPTCHA
 
 ### The Build Process (5 Hours of Chaos)
 
@@ -76,11 +80,9 @@ Because we could. Also because the hackathon judges wanted:
 - Added 18 skibidi toilet roasts
 
 **Hour 3: "SPINNING SKULL TIME"**
-- Tried to add 3D skull with Three.js
-- React 19 broke everything
-- Downgraded to React 18
-- Still broke
-- Said "screw it" and made a CSS spinning emoji
+- Implemented a 3D skull model with Three.js and @react-three/fiber
+- Skull rotates and glows with neon pink
+- Fallback to CSS spinning emoji if 3D fails
 
 **Hour 4: "Wait, we should add REAL Spotify"**
 - Built complete OAuth 2.0 flow in Next.js API routes
@@ -95,9 +97,11 @@ Because we could. Also because the hackathon judges wanted:
 - Marquee scrolling track names
 - Random scattered images
 - Neon glows EVERYWHERE
+- Built face-matching CAPTCHA with webcam + face detection
+- Implemented stupid meme face library (thinking monkey, Wojak, etc.)
 - Submitted at 3:59 PM
 
-### 🔐 Spotify Integration Deep Dive
+### Spotify Integration Deep Dive
 
 Because this is actually the coolest part:
 
@@ -126,9 +130,7 @@ Because this is actually the coolest part:
    - Plays on Web Playback SDK device
    - Shows track info in bottom dock
 
-**Fun fact:** We used `127.0.0.1` instead of `localhost` everywhere because cookies weren't sharing between them and we lost 30 minutes debugging this.
-
-## 📦 DEPENDENCIES (THE RECEIPTS)
+## DEPENDENCIES (THE RECEIPTS)
 
 ```json
 {
@@ -154,9 +156,8 @@ Because this is actually the coolest part:
 }
 ```
 
-**Note:** Had to downgrade React from 19 to 18 because Three.js had a meltdown about `ReactCurrentOwner` being undefined. Classic.
 
-## 🚀 GETTING STARTED (IF YOU DARE)
+## GETTING STARTED (IF YOU DARE)
 
 ### Prerequisites
 - **Node.js** 18+ (we used 20)
@@ -174,7 +175,7 @@ Create a `.env.local` file in the root:
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/api/spotify/callback
-SPOTIFY_PLAYLIST_ID=5xbMyvLwLbtlhKuAOfWpsa  # Our hardcoded playlist
+SPOTIFY_PLAYLIST_ID=03ILOfXD4E6VlS70yYZdtW  # Our hardcoded playlist
 
 # Cohere AI
 COHERE_API_KEY=your_cohere_api_key
@@ -211,13 +212,6 @@ npm run dev
 6. Enjoy the chaos
 
 ## 📁 PROJECT STRUCTURE (THE GUTS)
-    "eslint": "^9",
-    "eslint-config-next": "16.0.3"
-  }
-}
-```
-
-## � PROJECT STRUCTURE (THE GUTS)
 
 ```
 stupid-spotify/
@@ -354,7 +348,7 @@ npm install --legacy-peer-deps
 
 3. **Set up environment variables**
 
-Create a `.env.local` file in the root:
+Create a `.env.local` file in the root directory:
 ```bash
 # Spotify API
 SPOTIFY_CLIENT_ID=your_spotify_client_id
@@ -404,13 +398,10 @@ python parse_billboard.py
 6. **Click Billboard Songs** - They play different songs lol
 7. **Enjoy Chaos** - Watch the spinning skull, neon glows, and Comic Sans
 
-## 🏆 HACKATHON RESULTS
+## HACKATHON RESULTS
 
-**Category Scores:**
-- 💩 **Stupidity:** 10/10 - Maximum stupid achieved
-- ✨ **Execution:** 9/10 - Actually works surprisingly well
-- 🎨 **Creativity:** 10/10 - Nobody else thought of gaslighting AI + Spotify
-- 🔥 **Chaos:** 11/10 - Exceeded chaos limit
+**Awards:**
+- 🏅 Won **Worst User Experience** at Stupid Hackathon @ Western University 2025
 
 **What We Learned:**
 - OAuth 2.0 is actually not that hard
@@ -420,19 +411,6 @@ python parse_billboard.py
 - CSS transforms can make professional-looking things look stupid
 - You can build a working Spotify player in 1 hour if you're desperate
 - GeoCities aesthetic is timeless (in a bad way)
-
-## 🤝 CREDITS
-
-**Built by:** [@HasNate618](https://github.com/HasNate618)
-
-**Built with:** Desperation, chaos, and way too much coffee
-
-**Special thanks to:**
-- Spotify for having a surprisingly good API
-- Cohere for the unhinged AI
-- The early 2000s web designers who inspired this monstrosity  
-- Comic Sans MS for existing
-- Everyone who said "that's the stupidest idea I've ever heard" (you were right)
 
 ## 📝 LICENSE
 
@@ -447,117 +425,3 @@ This project is satire. We know it's ugly. That's the point. If you actually dep
 Made with 💀 and questionable decisions in 5 hours
 
 *"It's not a bug, it's a stupid feature"* - The Developers, probably
-```
-
-3. **Set up environment variables**
-
-Create a `.env.local` file in the root directory:
-```bash
-COHERE_API_KEY=your_cohere_api_key_here
-```
-
-4. **Add sound effects (optional)**
-
-Add your favorite meme sound effects (.mp3, .wav, .ogg) to `public/sfx/`:
-- bruh.mp3
-- yeet.mp3
-- vine-boom.mp3
-- emotional-damage.mp3
-- etc.
-
-### Running the App
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to experience the chaos.
-
-### Extracting Billboard Data (Optional)
-
-If you want to refresh the Billboard Hot 100 data:
-
-1. Install Python dependencies:
-```bash
-pip install beautifulsoup4
-```
-
-2. Place your Billboard HTML file in the root directory
-
-3. Run the parser:
-```bash
-python parse_billboard.py
-```
-
-This will generate `data/billboardSongs.ts` with the top 50 songs.
-
-## 📁 Project Structure
-
-```
-stupid-spotify/
-├── app/
-│   ├── page.tsx              # Main page with song grid
-│   ├── layout.tsx            # Root layout
-│   ├── globals.css           # Global styles
-│   └── api/
-│       └── chat/
-│           └── route.ts      # Cohere AI API endpoint
-├── components/
-│   ├── GaslightBot.tsx       # AI chatbot UI
-│   ├── DancingBaby.tsx       # 3D spinning skull
-│   └── Player.tsx            # Music player (not implemented)
-├── data/
-│   ├── songs.ts              # Original bad songs
-│   └── billboardSongs.ts     # Billboard Hot 100 data
-├── hooks/
-│   └── useAudioPlayer.ts     # Audio playback hook
-├── lib/
-│   └── musicPlayer.ts        # Play random song logic + roasts
-├── public/
-│   ├── billboard/            # Song cover images
-│   ├── sfx/                  # Sound effects
-│   └── skull_downloadable/   # 3D skull model
-└── services/
-    └── songService.ts        # Song data service
-```
-
-## 🎨 Features in Detail
-
-### AI Gaslighting Chatbot
-- Powered by Cohere's `command-r-08-2024` model
-- Generates unique roasts in skibidi/Gen Z slang
-- Auto-roasts your song choices when you click play
-- Messages include song titles and artists for personalized gaslighting
-
-### Billboard Hot 100 Integration
-- Top 50 songs from Billboard charts
-- Songs grouped by fake "cover art color detection"
-- Unknown artists replaced with random hilarious names:
-  - Lil Yeet, Big Chungus, DJ Skibidi, PostAlone, Billie Eyelash, etc.
-
-### Intentionally Bad Design
-- Early 2000s GeoCities aesthetic
-- Comic Sans, Impact, and Arial Black fonts
-- Neon colors: cyan, magenta, yellow, lime
-- 3D CSS borders (ridge, groove, outset)
-- Rotating cards, random emojis, visitor counter
-- Blinking text and rainbow dividers
-
-## 🤝 Contributing
-
-This is a hackathon project meant to be hilariously bad. PRs that make it worse are encouraged!
-
-## 📄 License
-
-MIT - Do whatever you want with this mess
-
-## 🙏 Acknowledgments
-
-- Billboard for the chart data
-- Cohere for the AI that roasts users
-- Early 2000s web designers for the inspiration
-- Gen Z for the slang fr fr no cap 💀
-
----
-
-Built with ❤️ and maximum chaos for a 5-hour hackathon
