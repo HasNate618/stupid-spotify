@@ -1,30 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+
+// In-memory image storage (persists for the session on Vercel)
+const imageStore = new Map<string, Buffer>();
 
 export async function POST(request: NextRequest) {
   try {
     const { imageData, filename } = await request.json();
     
+    if (!imageData || !filename) {
+      return NextResponse.json({ success: false, error: 'Missing imageData or filename' }, { status: 400 });
+    }
+    
     // Remove the data URL prefix
     const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
     
-    // Create the input directory if it doesn't exist
-    const inputDir = path.join(process.cwd(), 'public', 'input');
-    try {
-      await mkdir(inputDir, { recursive: true });
-    } catch (err) {
-      // Directory might already exist
-    }
+    // Store in memory
+    imageStore.set(filename, buffer);
     
-    // Save the file
-    const filePath = path.join(inputDir, filename);
-    await writeFile(filePath, buffer);
+    console.log(`📸 [save-image] Stored ${filename} in memory (${buffer.length} bytes)`);
     
-    return NextResponse.json({ success: true, filename });
+    return NextResponse.json({ success: true, filename, size: buffer.length });
   } catch (error) {
-    console.error('Error saving image:', error);
+    console.error('💥 [save-image] Error storing image:', error);
     return NextResponse.json({ success: false, error: 'Failed to save image' }, { status: 500 });
   }
 }
