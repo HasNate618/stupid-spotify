@@ -98,8 +98,8 @@ Because we could. Also because the hackathon judges wanted:
 - Random scattered images
 - Neon glows EVERYWHERE
 - Built face-matching CAPTCHA with webcam + face detection
-- Implemented stupid meme face library (thinking monkey, Wojak, etc.)
-- Submitted at 3:59 PM
+- Implemented stupid meme face library (thinking monkey, ec.)
+- Submitted at 3:59 PM**
 
 ### Spotify Integration Deep Dive
 

@@ -7,7 +7,7 @@ import CameraComponent from './camera';
 const referenceImages = [
   "/images/ref1.jpg",
   "/images/ref2.jpg",
-  "/images/ref3.webp",
+  "/images/ref3.gif",
 ];
 
 export default function Login() {
