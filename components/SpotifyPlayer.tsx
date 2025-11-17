@@ -210,64 +210,118 @@ export function SpotifyPlayer() {
     <div 
       className="fixed bottom-0 left-0 right-0 z-50"
       style={{
-        background: 'linear-gradient(180deg, #000000 0%, #1a1a1a 50%, #000000 100%)',
-        borderTop: '8px ridge #ff00ff',
-        boxShadow: '0 -8px 0px #00ffff, 0 -16px 0px rgba(255,0,255,0.3), 0 -4px 30px rgba(255,0,255,0.5)',
+        // Add a subtle repeating diagonal overlay that spans the full viewport width
+        background: 'repeating-linear-gradient(45deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 10px, transparent 10px, transparent 20px), linear-gradient(180deg, #ff00ff 0%, #00ffff 25%, #ffff00 50%, #00ff00 75%, #ff00ff 100%)',
+        borderTop: '6px solid #000',
+        boxShadow: '0 0 40px rgba(255,0,255,0.6)',
+        backgroundRepeat: 'repeat',
       }}
     >
+      {/* MEGA OBNOXIOUS HEADER BAR */}
+      <div 
+        className="w-full text-center py-1 overflow-hidden"
+        style={{
+          background: 'repeating-linear-gradient(90deg, #ff0000 0px, #ff7f00 10%, #ffff00 20%, #00ff00 30%, #0000ff 40%, #4b0082 50%, #9400d3 60%, #ff0000 100%)',
+          borderBottom: '4px solid #000',
+        }}
+      >
+        <div 
+          className="text-white font-black text-sm whitespace-nowrap inline-block animate-marquee"
+          style={{ fontFamily: '"Comic Sans MS", cursive' }}
+        >
+          ⚡ STUPID SPOTIFY PLAYER ⚡ NOW WITH 420% MORE CHAOS ⚡ GUARANTEED TO GASLIGHT YOUR EARS ⚡ NOT RESPONSIBLE FOR PERMANENT BRAIN DAMAGE ⚡ STUPID SPOTIFY PLAYER ⚡
+        </div>
+      </div>
+
       {/* Main player container */}
-      <div className="max-w-7xl mx-auto px-4 py-3">
+      <div className="max-w-7xl mx-auto px-4 py-4" style={{
+        // inner container is now transparent so the full-width diagonal pattern from the outer container shows through
+        background: 'transparent',
+      }}>
         <div className="flex items-center gap-4">
           
           {/* Left side - Status/Track info */}
           <div className="flex-1 min-w-0">
             <div 
-              className="p-3 border-4 border-lime-400 rounded"
+              className="p-4 border-8 border-double rounded-lg"
               style={{
-                background: 'linear-gradient(135deg, #000 0%, #1a1a1a 100%)',
-                boxShadow: '0 0 10px lime, inset 0 0 5px rgba(0,255,0,0.3)',
+                background: 'linear-gradient(135deg, #000 0%, #ff00ff 50%, #000 100%)',
+                borderColor: '#00ff00 #ff00ff #ffff00 #00ffff',
+                boxShadow: '0 0 20px #ff00ff, inset 0 0 10px rgba(255,0,255,0.5), 8px 8px 0px #000',
+                transform: 'rotate(-1deg)',
               }}
             >
               <div className="flex items-center gap-3">
                 {/* Animated music icon */}
-                <div className="text-4xl animate-bounce">
-                  {isPaused ? '⏸️' : '🎵'}
+                <div 
+                  className="text-5xl"
+                  style={{
+                    animation: isPaused ? 'none' : 'spin 2s linear infinite, bounce 0.5s ease-in-out infinite',
+                    filter: 'drop-shadow(0 0 10px #00ff00)',
+                  }}
+                >
+                  {isPaused ? '😴' : '🎵'}
                 </div>
                 
                 <div className="flex-1 min-w-0">
                   {/* Connection status */}
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold" style={{
-                      color: isConnected ? '#00ff00' : '#ff0000',
-                      textShadow: isConnected ? '0 0 5px #00ff00' : '0 0 5px #ff0000',
-                      fontFamily: '"Courier New", monospace'
-                    }}>
-                      {isConnected ? '● ONLINE' : '● OFFLINE'}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span 
+                      className="text-sm font-black px-3 py-1 border-4 border-black rounded-full"
+                      style={{
+                        background: isConnected ? 'linear-gradient(45deg, #00ff00, #00ff00)' : 'linear-gradient(45deg, #ff0000, #ff0000)',
+                        color: '#000',
+                        textShadow: isConnected ? '1px 1px 0px #00ff00' : '1px 1px 0px #ff0000',
+                        fontFamily: '"Impact", sans-serif',
+                        boxShadow: isConnected ? '0 0 15px #00ff00, 3px 3px 0px #000' : '0 0 15px #ff0000, 3px 3px 0px #000',
+                        animation: isConnected ? 'pulse 2s infinite' : 'blink 1s infinite',
+                      }}
+                    >
+                      {isConnected ? '● VIBING' : '● DEAD'}
                     </span>
-                    <span className="text-xs text-white/60" style={{ fontFamily: '"Arial", sans-serif' }}>
-                      |
-                    </span>
-                    <span className="text-xs font-bold text-purple-400" style={{ fontFamily: '"Impact", sans-serif' }}>
+                    <span 
+                      className="text-lg font-black"
+                      style={{ 
+                        color: '#ffff00',
+                        textShadow: '2px 2px 0px #ff00ff, -1px -1px 0px #00ffff',
+                        fontFamily: '"Comic Sans MS", cursive',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
                       STUPID SPOTIFY™
                     </span>
                   </div>
                   
                   {/* Now playing */}
                   {currentTrack && (
-                    <div className="mb-1 overflow-hidden">
+                    <div 
+                      className="mb-2 p-2 border-4 border-yellow-400 rounded overflow-hidden"
+                      style={{
+                        background: 'linear-gradient(90deg, #ff00ff, #00ffff)',
+                        boxShadow: '0 0 10px #ffff00',
+                      }}
+                    >
                       <div 
-                        className="text-white font-bold text-sm whitespace-nowrap inline-block animate-marquee"
-                        style={{ fontFamily: '"Arial Black", sans-serif' }}
+                        className="text-black font-black text-base whitespace-nowrap inline-block animate-marquee"
+                        style={{ 
+                          fontFamily: '"Arial Black", sans-serif',
+                          textShadow: '1px 1px 0px #fff',
+                        }}
                       >
-                        🎶 {currentTrack} 🎶 {currentTrack} 🎶
+                        ♫ {currentTrack} ♫ {currentTrack} ♫ {currentTrack} ♫
                       </div>
                     </div>
                   )}
                   
                   {/* Status text */}
                   <p 
-                    className="text-xs text-cyan-300 truncate"
-                    style={{ fontFamily: '"Courier New", monospace' }}
+                    className="text-sm font-bold truncate px-2 py-1 border-2 border-cyan-400 rounded"
+                    style={{ 
+                      fontFamily: '"Courier New", monospace',
+                      background: 'rgba(0,0,0,0.7)',
+                      color: '#00ffff',
+                      textShadow: '0 0 5px #00ffff',
+                    }}
                   >
                     {status}
                   </p>
@@ -282,46 +336,49 @@ export function SpotifyPlayer() {
               {/* Skip button - SLANTED */}
               <button
                 onClick={handleNext}
-                className="p-4 font-black text-2xl border-4 border-black transform hover:scale-110 active:scale-95 transition-transform"
+                className="p-4 font-black text-3xl border-6 border-black transform hover:scale-110 active:scale-95 transition-transform"
                 style={{
-                  background: 'linear-gradient(135deg, #ff00ff, #ff00aa)',
-                  boxShadow: '6px 6px 0px #000, 0 0 20px rgba(255,0,255,0.6)',
-                  fontFamily: '"Comic Sans MS", cursive',
-                  transform: 'rotate(-8deg) skewX(-5deg)',
-                  clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)',
-                  width: '70px',
-                  height: '70px',
+                  background: 'repeating-linear-gradient(45deg, #ff00ff, #ff00ff 10px, #ffff00 10px, #ffff00 20px)',
+                  boxShadow: '8px 8px 0px #000, 12px 12px 0px #00ffff, 0 0 25px rgba(255,0,255,0.8)',
+                  fontFamily: '"Impact", sans-serif',
+                  transform: 'rotate(-12deg) skewX(-8deg)',
+                  clipPath: 'polygon(15% 0%, 100% 5%, 85% 100%, 0% 95%)',
+                  width: '80px',
+                  height: '80px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  textShadow: '3px 3px 0px #000',
                 }}
                 title="Next Random Song"
               >
                 ⏭️
               </button>
               
-              {/* Giant play/pause button - SLANTED & STUPID */}
+              {/* Giant play/pause button - ULTRA SLANTED & STUPID */}
               <button
                 onClick={handleTogglePlay}
-                className="p-4 font-black text-4xl border-8 border-black transform hover:scale-110 active:scale-90 transition-transform"
+                className="p-6 font-black text-5xl border-8 transform hover:scale-110 active:scale-90 transition-transform"
                 style={{
                   background: isPaused 
-                    ? 'linear-gradient(135deg, #00ff00 0%, #00cc00 50%, #lime 100%)' 
-                    : 'linear-gradient(135deg, #ff0000 0%, #cc0000 50%, #ff00ff 100%)',
+                    ? 'repeating-linear-gradient(135deg, #00ff00, #00ff00 15px, #ffff00 15px, #ffff00 30px)' 
+                    : 'repeating-linear-gradient(135deg, #ff0000, #ff0000 15px, #ff00ff 15px, #ff00ff 30px)',
+                  borderColor: isPaused ? '#ffff00' : '#ff00ff',
+                  borderStyle: 'double',
                   boxShadow: isPaused 
-                    ? '8px 8px 0px #000, 12px 12px 0px rgba(0,0,0,0.5), 0 0 40px rgba(0,255,0,0.9)' 
-                    : '8px 8px 0px #000, 12px 12px 0px rgba(0,0,0,0.5), 0 0 40px rgba(255,0,0,0.9)',
-                  animation: isPaused ? 'none' : 'pulse 0.8s infinite',
-                  width: '100px',
-                  height: '100px',
+                    ? '10px 10px 0px #000, 15px 15px 0px #ffff00, 0 0 50px rgba(0,255,0,0.9)' 
+                    : '10px 10px 0px #000, 15px 15px 0px #ff00ff, 0 0 50px rgba(255,0,0,0.9)',
+                  animation: isPaused ? 'none' : 'pulse 0.6s infinite, spin 3s linear infinite',
+                  width: '120px',
+                  height: '120px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  transform: 'rotate(3deg) skewY(-2deg)',
-                  clipPath: 'polygon(5% 10%, 95% 0%, 100% 90%, 10% 100%)',
-                  fontFamily: '"Impact", sans-serif',
-                  textShadow: '3px 3px 0px rgba(0,0,0,0.8)',
-                  letterSpacing: '-2px',
+                  transform: 'rotate(5deg) skewY(-3deg)',
+                  clipPath: 'polygon(8% 15%, 92% 5%, 95% 85%, 12% 95%)',
+                  fontFamily: '"Comic Sans MS", cursive',
+                  textShadow: '4px 4px 0px #000, -2px -2px 0px #fff',
+                  letterSpacing: '-4px',
                 }}
               >
                 {isPaused ? '▶' : '⏸'}
@@ -330,18 +387,19 @@ export function SpotifyPlayer() {
               {/* Random button - SLANTED OPPOSITE */}
               <button
                 onClick={handleNext}
-                className="p-4 font-black text-2xl border-4 border-black transform hover:scale-110 active:scale-95 transition-transform"
+                className="p-4 font-black text-3xl border-6 border-black transform hover:scale-110 active:scale-95 transition-transform"
                 style={{
-                  background: 'linear-gradient(135deg, #00ffff, #0088ff)',
-                  boxShadow: '6px 6px 0px #000, 0 0 20px rgba(0,255,255,0.6)',
-                  fontFamily: '"Comic Sans MS", cursive',
-                  transform: 'rotate(8deg) skewX(5deg)',
-                  clipPath: 'polygon(0% 0%, 90% 0%, 100% 100%, 10% 100%)',
-                  width: '70px',
-                  height: '70px',
+                  background: 'repeating-linear-gradient(-45deg, #00ffff, #00ffff 10px, #00ff00 10px, #00ff00 20px)',
+                  boxShadow: '8px 8px 0px #000, 12px 12px 0px #ff00ff, 0 0 25px rgba(0,255,255,0.8)',
+                  fontFamily: '"Impact", sans-serif',
+                  transform: 'rotate(12deg) skewX(8deg)',
+                  clipPath: 'polygon(0% 5%, 85% 0%, 100% 95%, 15% 100%)',
+                  width: '80px',
+                  height: '80px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  textShadow: '3px 3px 0px #000',
                 }}
                 title="Random Song"
               >
@@ -351,19 +409,21 @@ export function SpotifyPlayer() {
           )}
 
           {/* Right side - Fake visualizer */}
-          <div className="hidden md:flex items-end gap-1 h-16 p-2 border-4 border-cyan-400 rounded" style={{
-            background: 'linear-gradient(180deg, #000 0%, #0a0a0a 100%)',
-            boxShadow: '0 0 10px cyan, inset 0 0 5px rgba(0,255,255,0.3)',
+          <div className="hidden md:flex items-end gap-1 h-20 p-3 border-8 border-double rounded-lg" style={{
+            background: 'repeating-linear-gradient(90deg, #000 0px, #1a1a1a 10px, #000 20px)',
+            borderColor: '#ff00ff #00ffff #ffff00 #00ff00',
+            boxShadow: '0 0 20px #00ffff, inset 0 0 10px rgba(0,255,255,0.5), 6px 6px 0px #000',
+            transform: 'rotate(2deg)',
           }}>
-            {[...Array(12)].map((_, i) => (
+            {[...Array(16)].map((_, i) => (
               <div
                 key={i}
-                className="w-2 rounded-t"
+                className="w-3 rounded-t border-2 border-black"
                 style={{
                   height: `${Math.random() * 80 + 20}%`,
-                  background: 'linear-gradient(to top, #ff00ff, #00ffff)',
-                  animation: !isPaused ? `bounce ${0.3 + Math.random() * 0.5}s ease-in-out infinite alternate` : 'none',
-                  boxShadow: '0 0 5px rgba(255,0,255,0.5)',
+                  background: `linear-gradient(to top, ${['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#4b0082', '#9400d3'][i % 7]}, ${['#ff00ff', '#00ffff', '#ffff00'][i % 3]})`,
+                  animation: !isPaused ? `bounce ${0.2 + Math.random() * 0.4}s ease-in-out infinite alternate` : 'none',
+                  boxShadow: `0 0 8px ${['#ff0000', '#00ff00', '#0000ff', '#ffff00'][i % 4]}`,
                 }}
               />
             ))}
