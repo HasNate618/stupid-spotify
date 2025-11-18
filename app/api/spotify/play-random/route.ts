@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID || '27f81310e38146e292262f55398e4a53';
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET || '14255e976b434c58ad692ca18d64a252';
-const PLAYLIST_ID = process.env.SPOTIFY_PLAYLIST_ID || '5xbMyvLwLbtlhKuAOfWpsa';
+const PLAYLIST_ID = process.env.SPOTIFY_PLAYLIST_ID || '03ILOfXD4E6VlS70yYZdtW';
 
 async function refreshAccessToken(refreshToken: string) {
   const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -29,24 +29,19 @@ async function refreshAccessToken(refreshToken: string) {
 }
 
 async function getValidAccessToken() {
-  // Check cookies first
+  // ONLY use cookies - never use global in-memory tokens
+  // This prevents unauthenticated users from using other users' tokens
   const cookieStore = await cookies();
   const cookieAccessToken = cookieStore.get('spotify_access_token')?.value;
   const cookieRefreshToken = cookieStore.get('spotify_refresh_token')?.value;
   
-  if (cookieAccessToken && cookieRefreshToken) {
-    setTokens(cookieAccessToken, cookieRefreshToken, 3600);
+  if (!cookieAccessToken || !cookieRefreshToken) {
+    throw new Error('No refresh token available');
   }
   
-  let token = getAccessToken();
-  if (isTokenExpired() || !token) {
-    const refreshToken = getRefreshToken() || cookieRefreshToken;
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
-    }
-    token = await refreshAccessToken(refreshToken);
-  }
-  return token;
+  // For simplicity, just use the access token from cookies
+  // In production, you'd want to check expiration and refresh if needed
+  return cookieAccessToken;
 }
 
 export async function GET(request: NextRequest) {

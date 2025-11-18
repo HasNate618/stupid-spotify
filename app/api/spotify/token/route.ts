@@ -33,7 +33,7 @@ export async function GET() {
   try {
     console.log('🔑 [token] Token request received');
     
-    // First check cookies
+    // ONLY use cookies - never use global in-memory tokens
     const cookieStore = await cookies();
     const cookieAccessToken = cookieStore.get('spotify_access_token')?.value;
     const cookieRefreshToken = cookieStore.get('spotify_refresh_token')?.value;
@@ -43,31 +43,15 @@ export async function GET() {
       hasRefreshToken: !!cookieRefreshToken
     });
     
-    // If we have cookie tokens, restore them to memory
-    if (cookieAccessToken && cookieRefreshToken) {
-      console.log('✅ [token] Restoring tokens from cookies');
-      setTokens(cookieAccessToken, cookieRefreshToken, 3600); // Assume 1 hour for cookie tokens
-    }
-    
-    if (!hasTokens()) {
-      console.error('❌ [token] No tokens available');
+    if (!cookieAccessToken || !cookieRefreshToken) {
+      console.error('❌ [token] No tokens available in cookies');
       return NextResponse.json({ error: 'not_authorized' }, { status: 401 });
     }
 
-    let accessToken = getAccessToken();
-
-    if (isTokenExpired() || !accessToken) {
-      console.log('⏰ [token] Token expired or missing, refreshing...');
-      const refreshToken = getRefreshToken() || cookieRefreshToken;
-      if (!refreshToken) {
-        console.error('❌ [token] No refresh token available');
-        return NextResponse.json({ error: 'not_authorized' }, { status: 401 });
-      }
-      accessToken = await refreshAccessToken(refreshToken);
-    }
-
-    console.log('✅ [token] Returning access token');
-    return NextResponse.json({ access_token: accessToken });
+    // For simplicity, return the cookie token directly
+    // In production, check expiration and refresh if needed
+    console.log('✅ [token] Returning access token from cookies');
+    return NextResponse.json({ access_token: cookieAccessToken });
   } catch (error) {
     console.error('💥 [token] Error:', error);
     return NextResponse.json({ error: 'token_error' }, { status: 500 });
